@@ -6,41 +6,42 @@ export const useFolderStore = defineStore('folder', {
             folder : {
                 Uploads : {
                     isActive: false,
-                    isDropdown: true,
-                    isChild: false
+                    isParent: true,
+                    color: '#8c8c8c'
                 },
                 Sources : {
                     isActive: false,
-                    isDropdown: false,
-                    isChild: false
+                    isParent: true,
+                    color: '#8c8c8c'
                 },
                 Shared : {
                     isActive: false,
-                    isDropdown: false,
-                    isChild: false
+                    isParent: true,
+                    color: '#8c8c8c'
                 },
                 Images : {
                     isActive: false,
-                    isDropdown: false,
-                    isChild: true
+                    isChild: true,
+                    parent: 'Uploads',
+                    color: '#8c8c8c'
                 },
                 Document : {
                     isActive: false,
-                    isDropdown: false,
-                    isChild: true
+                    isChild: true,
+                    parent: 'Uploads',
+                    color: '#8c8c8c'
                 },
                 Videos : {
                     isActive: false,
-                    isDropdown: false,
-                    isChild: true
+                    isChild: true,
+                    parent: 'Uploads',
+                    color: '#8c8c8c'
                 }
-            }
+            },
+            usedCapacityRate: 0.00,
+            listItemFolder: []
         }
     },
     actions: {
-        resetMenu() {
-            this.leftMenu = {
-            };
-        }
     }
 })

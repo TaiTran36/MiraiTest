@@ -1,16 +1,20 @@
 <template>
     <div class="range-box">
-        <div class="rate" :style="{width: rate + '%'}"></div>
+        <div class="rate" :style="{width: rateUsed + '%'}"></div>
     </div>
 </template>
 
 <script>
 export default {
     name: "RangerSliderImportComponent",
+    props: ['rate'],
     data() {
         return {
-            rate: '50'
+            rateUsed: '50'
         }
+    },
+    created() {
+        this.rateUsed = this.rate
     }
 }
 </script>

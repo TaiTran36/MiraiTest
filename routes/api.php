@@ -36,7 +36,7 @@ Route::post('logout', [UserController::class, 'logout'])->middleware('auth:sanct
 
 Route::group(['namespace' => 'App\Http\Controllers\API\Accounts', 'prefix' => 'accounts'], function () {
     Route::post('/', 'RegisterController@run');
-    Route::post('/create', 'CreateController@run');
+    Route::get('/create', 'CreateController@run');
     Route::post('/update', 'UpdateController@run');
     Route::get('/detail', 'DetailController@run');
     Route::get('/detail-all', 'DetailAllController@run');

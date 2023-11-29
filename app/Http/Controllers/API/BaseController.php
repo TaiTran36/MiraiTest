@@ -41,8 +41,8 @@ abstract class BaseController
             $responseData = $this->execute($request);
 
             //Response
-            $response = ResponseHelper::getResponse(httpStatusCode: Constant::HTTP_STATUS_CODE_OK, data: $responseData);
-        } catch (ApiException | MemberInvalidException $e) {
+            $response = ResponseHelper::getResponse(Constant::HTTP_STATUS_CODE_OK, $responseData);
+        } catch (ApiException) {
             $response = ResponseHelper::formatApiException($e);
         } catch (\Exception $e) {
             $this->logService->writeLogError($this->logUID, Message::LOG_EXCEPTION, params: ['message' => $e->getTraceAsString()]);

@@ -10,10 +10,10 @@
                     <div class="change-plan"><a href="javascript:void(0)">Change Plan</a></div>
                 </div>
                 <div class="range-slider-storage">
-                    <RangerSliderImportComponent></RangerSliderImportComponent>
+                    <RangerSliderImportComponent :rate="folderStore.usedCapacityRate"></RangerSliderImportComponent>
                 </div>
                 <div class="storage-content">
-                    <span class="rate">6%</span> used of 2GB
+                    <span class="rate">{{folderStore.usedCapacityRate}}%</span> used of 2GB
                 </div>
             </div>
             <div class="search">
@@ -29,14 +29,34 @@
                 </div>
                 <div class="list-folders">
                     <div v-for="item in dataFolders" :key="item.id">
-                        <div class="item" @click="activeItem(item.name)">
-                            <ItemSidebarActiveComponent v-if="folderStore.folder[item.name].isActive" :label="item.name" :width="60"></ItemSidebarActiveComponent>
-                            <ItemSidebarComponent v-if="!folderStore.folder[item.name].isActive" :label="item.name" :width="60"></ItemSidebarComponent>
+                        <div class="item" @click="toggleActiveItem(item.name)">
+                            <ItemSidebarComponent
+                                                  :label="item.name"
+                                                  :width="60"
+                                                  :total="item.children.length"
+                            ></ItemSidebarComponent>
                         </div>
-                        <div v-show="item.children.length > 0 && folderStore.folder[item.name].isActive" class="itemChild" v-for="itemChild in item.children" :key="itemChild.id" @click="activeItem(itemChild.name)">
-                            <ItemSidebarChildActiveComponent :label="itemChild.name" v-if="folderStore.folder[itemChild.name].isActive" :width="70"> </ItemSidebarChildActiveComponent>
-                            <ItemSidebarComponent v-if="!folderStore.folder[itemChild.name].isActive" :label="itemChild.name" :width="70"></ItemSidebarComponent>
+                        <div v-show="item.children.length > 0 && folderStore.folder[item.name].isActive" class="itemChild" v-for="itemChild in item.children" :key="itemChild.id" @click="toggleActiveItem(itemChild.name, itemChild.children)">
+                            <ItemSidebarComponent
+                                                    :label="itemChild.name"
+                                                    :width="80"
+                                                    :total="itemChild.children.length"
+                            ></ItemSidebarComponent>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="members">
+                <div class="label-box">
+                    <div class="label">Members</div>
+                    <div class="change-plan"><a href="javascript:void(0)">Select all</a></div>
+                </div>
+                <div class="member-content">
+                    <div>
+                        <InputCheckboxComponent label="All"></InputCheckboxComponent>
+                    </div>
+                    <div>
+                        <InputCheckboxComponent label="Admin"></InputCheckboxComponent>
                     </div>
                 </div>
             </div>
@@ -53,14 +73,12 @@ import IconFolderComponent from "../../components/icons/IconFolder/IconFolderCom
 import ItemSidebarComponent from "../../components/Item_sidebar/ItemSidebarComponent";
 import { dataFolders } from "../../data/DataFolders";
 import { useFolderStore } from "../../stores/folder";
-import ItemSidebarActiveComponent from "../../components/item_sidebar_active/ItemSidebarActiveComponent";
-import ItemSidebarChildActiveComponent
-    from "../../components/item_sidebar_child_active/ItemSidebarChildActiveComponent";
+import {APP_CONSTANTS} from "../../uitls/constansts";
+import InputCheckboxComponent from "../../components/input/InputCheckbox/InputCheckboxComponent.vue";
 export default {
     name: "SidebarDev",
     components: {
-        ItemSidebarChildActiveComponent,
-        ItemSidebarActiveComponent,
+        InputCheckboxComponent,
         ButtonImportComponent,
         RangerSliderImportComponent,
         InputSearchComponent,
@@ -79,9 +97,38 @@ export default {
             folderStore
         }
     },
+    created() {
+        this.folderStore.folder['Uploads'].isActive = true
+        this.folderStore.folder['Uploads'].color = APP_CONSTANTS.COLOR_ITEM_SIDEBAR_PARENT_ACTIVE
+    },
     methods: {
-        activeItem(name) {
-            this.folderStore.folder[name].isActive = !this.folderStore.folder[name].isActive
+        toggleActiveItem(name, listChild = []) {
+            Object.keys(this.folderStore.folder).forEach((item) => {
+                if(item === name) {
+                    this.folderStore.folder[name].isActive = !this.folderStore.folder[name].isActive
+                    this.folderStore.folder[name].color = APP_CONSTANTS.COLOR_ITEM_SIDEBAR_PARENT_ACTIVE
+                    this.calculateUsedCapacity(listChild)
+                    if(this.folderStore.folder[name].isChild) {
+                        this.folderStore.folder[name].color = APP_CONSTANTS.COLOR_ITEM_SIDEBAR_CHILD_ACTIVE
+                    }
+                    if(!this.folderStore.folder[name].isActive) {
+                        this.folderStore.folder[name].color = APP_CONSTANTS.COLOR_ITEM_SIDEBAR
+                    }
+                }else if((this.folderStore.folder[item].isParent && this.folderStore.folder[name].parent !== item) || this.folderStore.folder[item].isChild) {
+                        this.folderStore.folder[item].isActive = false
+                        this.folderStore.folder[item].color = APP_CONSTANTS.COLOR_ITEM_SIDEBAR
+                }
+            });
+        },
+        calculateUsedCapacity(listChild) {
+            this.folderStore.listItemFolder = listChild
+            let sizeUsed = 0.00
+            if(listChild.length > 0) {
+                listChild.forEach((item) => {
+                    sizeUsed += parseFloat(item.size)
+                })
+            }
+            this.folderStore.usedCapacityRate = (sizeUsed / Math.pow(10,9) * 100).toFixed(1)
         }
     }
 }
@@ -140,6 +187,7 @@ export default {
             .list-folders {
                 .item {
                     cursor: pointer;
+                    margin-bottom: 5px;
                     &:hover {
                         background: #cccccc;
                         border-radius: 5px;
@@ -148,11 +196,25 @@ export default {
                 .itemChild {
                     cursor: pointer;
                     padding-left: 10px;
+                    margin-bottom: 5px;
                     &:hover {
                         background: #cccccc;
                         border-radius: 5px;
                     }
                 }
+            }
+        }
+        .members {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            .label-box {
+                display: flex;
+                justify-content: space-between;
+            }
+            .member-content {
+                display: flex;
+                flex-direction: column;
             }
         }
     }

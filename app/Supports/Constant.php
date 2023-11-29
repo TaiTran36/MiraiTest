@@ -17,4 +17,20 @@ class Constant
     const TYPE_LOG_CRITICAL = 'CRITICAL';
     const TYPE_LOG_ERROR = 'ERROR';
     const TYPE_LOG_END = 'END';
+
+    // hierarchy
+    const INDEX_APP_ENV_IMPRINT_HTML_FILE_FIRST = '0';
+    const HIERARCHY_APP_ENV_IMPRINT_HTML_FILE_FIRST = 'imprint_html_file';
+    const INDEX_APP_ENV_IMPRINT_HTML_FILE_SECOND = '1';
+    const HIERARCHY_APP_ENV_IMPRINT_HTML_FILE_SECOND = 'imprint_html_file_2';
+    const INDEX_CONTRACT_APP_AWS = '0';
+    const HIERARCHY_CONTRACT_APP_AWS = 'aws';
+    const INDEX_CONTRACT_APP_K5 = '1';
+    const HIERARCHY_CONTRACT_APP_K5 = 'k5';
+    const INDEX_CONTRACT_APP_T2 = '2';
+    const HIERARCHY_CONTRACT_APP_T2 = 't2';
+    const INDEX_CONTRACT_SERVER_APP1 = '0';
+    const HIERARCHY_CONTRACT_SERVER_APP1 = 'app1';
+    const INDEX_CONTRACT_SERVER_APP2 = '2';
+    const HIERARCHY_CONTRACT_SERVER_APP2 = 'app2';
 }
