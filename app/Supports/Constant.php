@@ -9,7 +9,10 @@ class Constant
     const HTTP_STATUS_CODE_BAD_REQUEST = 400;
     const HTTP_STATUS_CODE_UNAUTHORIZED = 401;
     const HTTP_STATUS_CODE_PASSWORD_EXPIRED = 403;
+    const HTTP_STATUS_CODE_NOT_FOUND = 404;
     const HTTP_STATUS_CODE_INTERNAL_SERVER_ERROR = 500;
+
+    const LIMIT_LIST_ACCOUNT = 2;
 
     //Log type (start, progress, error, end)
     const TYPE_LOG_START = 'START';
@@ -33,4 +36,5 @@ class Constant
     const HIERARCHY_CONTRACT_SERVER_APP1 = 'app1';
     const INDEX_CONTRACT_SERVER_APP2 = '2';
     const HIERARCHY_CONTRACT_SERVER_APP2 = 'app2';
+
 }

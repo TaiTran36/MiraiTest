@@ -13,13 +13,16 @@
                     <RangerSliderImportComponent :rate="folderStore.usedCapacityRate"></RangerSliderImportComponent>
                 </div>
                 <div class="storage-content">
-                    <span class="rate">{{folderStore.usedCapacityRate}}%</span> used of 2GB
+                    <span class="rate">{{folderStore.usedCapacityRate}}%</span> used of 1GB
                 </div>
             </div>
             <div class="search">
                 <div class="label">Search</div>
                 <div>
-                    <InputSearchComponent></InputSearchComponent>
+                    <InputSearchComponent v-on:input-value="onChange($event, 'searchItem')"
+                                          placeholder="e.g Image.png"
+                                          :value-default="searchItem"
+                    ></InputSearchComponent>
                 </div>
             </div>
             <div class="folders">
@@ -36,7 +39,7 @@
                                                   :total="item.children.length"
                             ></ItemSidebarComponent>
                         </div>
-                        <div v-show="item.children.length > 0 && folderStore.folder[item.name].isActive" class="itemChild" v-for="itemChild in item.children" :key="itemChild.id" @click="toggleActiveItem(itemChild.name, itemChild.children)">
+                        <div v-show="item.children.length > 0 && folderStore.folder[item.name].isActive" class="itemChild" :class="{itemChildActive: folderStore.folder[itemChild.name].isActive}" v-for="itemChild in item.children" :key="itemChild.id" @click="toggleActiveItem(itemChild.name, itemChild.children)">
                             <ItemSidebarComponent
                                                     :label="itemChild.name"
                                                     :width="80"
@@ -53,10 +56,16 @@
                 </div>
                 <div class="member-content">
                     <div>
-                        <InputCheckboxComponent label="All"></InputCheckboxComponent>
+                        <InputCheckboxComponent label="All"
+                                                :checked="selectAll"
+                                                v-on:input-value="onChange($event, 'selectAll')"
+                        ></InputCheckboxComponent>
                     </div>
                     <div>
-                        <InputCheckboxComponent label="Admin"></InputCheckboxComponent>
+                        <InputCheckboxComponent label="Admin"
+                                                :checked="selectAdmin"
+                                                v-on:input-value="onChange($event, 'selectAdmin')"
+                        ></InputCheckboxComponent>
                     </div>
                 </div>
             </div>
@@ -88,7 +97,26 @@ export default {
     },
     data() {
         return {
-            dataFolders
+            dataFolders,
+            selectAll: true,
+            selectAdmin: null,
+            searchItem: '',
+            listItem: []
+        }
+    },
+    watch: {
+        selectAdmin() {
+            if(this.selectAdmin) {
+                this.getListItemByAuthor('Admin')
+            }
+        },
+        selectAll() {
+            if(this.selectAll) {
+                this.getListItemByAuthor()
+            }
+        },
+        searchItem() {
+            this.searchItemByNameImage(this.searchItem)
         }
     },
     setup() {
@@ -102,6 +130,7 @@ export default {
         this.folderStore.folder['Uploads'].color = APP_CONSTANTS.COLOR_ITEM_SIDEBAR_PARENT_ACTIVE
     },
     methods: {
+        // toggle active item in sidebar
         toggleActiveItem(name, listChild = []) {
             Object.keys(this.folderStore.folder).forEach((item) => {
                 if(item === name) {
@@ -120,15 +149,46 @@ export default {
                 }
             });
         },
+
+        // calculate
         calculateUsedCapacity(listChild) {
             this.folderStore.listItemFolder = listChild
+            this.listItem = listChild
             let sizeUsed = 0.00
             if(listChild.length > 0) {
                 listChild.forEach((item) => {
                     sizeUsed += parseFloat(item.size)
                 })
             }
-            this.folderStore.usedCapacityRate = (sizeUsed / Math.pow(10,9) * 100).toFixed(1)
+            this.folderStore.usedCapacityRate = (sizeUsed / (APP_CONSTANTS.STORAGE_CAPACITY_UPLOAD * Math.pow(10,9)) * 100).toFixed(2)
+        },
+        // event change
+        onChange(value, name) {
+            this.$data[name] = value
+            if(name === 'selectAll') {
+                this.$data['selectAdmin'] = false
+            }
+            if(name === 'selectAdmin') {
+                this.$data['selectAll'] = false
+            }
+        },
+        // get list item by author
+        getListItemByAuthor(name = 'all') {
+            this.folderStore.listItemFolder =  this.listItem
+            if(name !== 'all') {
+                this.folderStore.listItemFolder = this.listItem.filter(obj => {
+                     return obj.photo_by === name
+                })
+            }
+        },
+        // search item by name
+        searchItemByNameImage(name) {
+            this.folderStore.listItemFolder =  this.listItem
+            if(name) {
+                this.folderStore.listItemFolder = this.listItem.filter(obj => {
+                    return obj.name.includes(name)
+                })
+            }
         }
     }
 }
@@ -201,6 +261,13 @@ export default {
                         background: #cccccc;
                         border-radius: 5px;
                     }
+                }
+                .itemChildActive {
+                    cursor: pointer;
+                    padding-left: 10px;
+                    margin-bottom: 5px;
+                    background: #cce0ff;
+                    border-radius: 5px;
                 }
             }
         }
