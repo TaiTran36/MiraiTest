@@ -1,5 +1,5 @@
 import {createWebHistory, createRouter} from "vue-router";
-import ImagePage from "../pages/Images/ImagePage";
+import ImagePage from "../pages/Images/ImagePage.vue";
 const routes = [
     {
         path: "/imports",

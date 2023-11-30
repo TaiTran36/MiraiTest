@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import SidebarDev from "./sidebars/SidebarDev";
-import ContainerDev from "./containers/ContainerDev";
+import SidebarDev from "./sidebars/SidebarDev.vue";
+import ContainerDev from "./containers/ContainerDev.vue";
 export default {
     name: "LayoutDev",
     components: {

@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import IconArrowRightComponent from "../../components/icons/IconArrowRight/IconArrowRightComponent";
-import IconFolderComponent from "../../components/icons/IconFolder/IconFolderComponent";
+import IconArrowRightComponent from "../../components/icons/IconArrowRight/IconArrowRightComponent.vue";
+import IconFolderComponent from "../../components/icons/IconFolder/IconFolderComponent.vue";
 import { useFolderStore } from "../../stores/folder";
 export default {
     name: "ItemSidebarComponent",

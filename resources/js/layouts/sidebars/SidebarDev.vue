@@ -74,15 +74,15 @@
 </template>
 
 <script>
-import ButtonImportComponent from "../../components/button/ButtonImport/ButtonImportComponent";
-import RangerSliderImportComponent from "../../components/range_sliders/RangeSliderImport/RangerSliderImportComponent";
-import InputSearchComponent from "../../components/input/InputSearch/InputSearchComponent";
-import IconArrowRightComponent from "../../components/icons/IconArrowRight/IconArrowRightComponent";
-import IconFolderComponent from "../../components/icons/IconFolder/IconFolderComponent";
-import ItemSidebarComponent from "../../components/Item_sidebar/ItemSidebarComponent";
-import { dataFolders } from "../../data/DataFolders";
-import { useFolderStore } from "../../stores/folder";
-import {APP_CONSTANTS} from "../../uitls/constansts";
+import ButtonImportComponent from "../../components/button/ButtonImport/ButtonImportComponent.vue";
+import RangerSliderImportComponent from "../../components/range_sliders/RangeSliderImport/RangerSliderImportComponent.vue";
+import InputSearchComponent from "../../components/input/InputSearch/InputSearchComponent.vue";
+import IconArrowRightComponent from "../../components/icons/IconArrowRight/IconArrowRightComponent.vue";
+import IconFolderComponent from "../../components/icons/IconFolder/IconFolderComponent.vue";
+import ItemSidebarComponent from "../../components/Item_sidebar/ItemSidebarComponent.vue";
+import { dataFolders } from "@/data/DataFolders";
+import { useFolderStore } from "@/stores/folder";
+import {APP_CONSTANTS} from "@/uitls/constansts";
 import InputCheckboxComponent from "../../components/input/InputCheckbox/InputCheckboxComponent.vue";
 export default {
     name: "SidebarDev",

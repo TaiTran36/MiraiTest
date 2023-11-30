@@ -4,7 +4,7 @@
     </component>
 </template>
 <script>
-import LayoutDev from "./layouts/LayoutDev";
+import LayoutDev from "./layouts/LayoutDev.vue";
     export default {
         name: "App",
         components: {
