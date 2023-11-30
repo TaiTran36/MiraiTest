@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\API\Accounts;
 
-use App\Http\Request\UpdateAccountRequest;
+use App\Http\Controllers\API\BaseController;
+use App\Http\Request\ApiRequest;
 use App\Services\Account\AccountService;
 use App\Supports\Constant;
 use App\Supports\Helpers\Helper;
 use App\Supports\Message;
 use Illuminate\Support\Facades\Log;
 
-class UpdateController
+class UpdateController extends BaseController
 {
     protected $accountService;
     public function __construct(AccountService $accountService)
@@ -17,16 +18,15 @@ class UpdateController
         $this->accountService = $accountService;
     }
 
-    public function updateAccount(UpdateAccountRequest $request) {
-        Log::info(Message::LOG_START);
-
+    public function execute(ApiRequest $request)
+    {
+        $request->getChild('App\Http\Request\UpdateAccountRequest');
         $dataAccount = $request->all();
         Log::info('### Param request: '  . json_encode($dataAccount));
         $existAccount = $this->accountService->checkExistAccount($dataAccount['login']);
 
         if(!$existAccount) {
             Log::info('### Error: ' . Message::ACCOUNT_NOT_EXIST);
-            Log::info(Message::LOG_END);
             return Helper::sendError(Constant::HTTP_STATUS_CODE_INTERNAL_SERVER_ERROR, Message::ACCOUNT_NOT_EXIST );
         }
 
@@ -38,7 +38,6 @@ class UpdateController
                 'message' => Message::UPDATE_ACCOUNT_SUCCESSFULLY
             ];
             Log::info('### Result: ' . Message::UPDATE_ACCOUNT_SUCCESSFULLY);
-            Log::info(Message::LOG_END);
             return Helper::sendResponse($dataResponse, Constant::HTTP_STATUS_CODE_OK);
         }
     }

@@ -9,7 +9,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class DetailAccountRequest extends FormRequest
+class DetailAccountRequest extends ApiRequest
 {
     public function rules(): array
     {
@@ -28,14 +28,5 @@ class DetailAccountRequest extends FormRequest
         return [
             'login.required' => Message::LOGIN_REQUIRED,
         ];
-    }
-
-    protected function failedValidation(Validator $validator)
-    {
-        $errors = (new ValidationException($validator))->errors();
-
-        throw new HttpResponseException(
-            response()->json(['errors' => $errors, 'code'=> 401], JsonResponse::HTTP_UNPROCESSABLE_ENTITY)
-        );
     }
 }

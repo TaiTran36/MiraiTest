@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Exceptions\ApiException;
-use App\Exceptions\MemberInvalidException;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\ApiRequest;
+use App\Http\Request\ApiRequest;
 use App\Services\LogService;
 use App\Supports\Constant;
 use App\Supports\Helpers\Helper;
-use App\Supports\Helpers\ResponseHelper;
 use App\Supports\Message;
+use Illuminate\Support\Facades\Log;
 
 abstract class BaseController
 {
@@ -22,7 +19,6 @@ abstract class BaseController
      */
     public function __construct()
     {
-        $this->logService = new LogService;
     }
 
     /**
@@ -35,22 +31,17 @@ abstract class BaseController
     {
         try {
             //Start log
-            $this->logService->writeLogStart(Helper::generateLogID(), $request);
+            Log::info(Message::LOG_START);
 
             //API processing
-            $responseData = $this->execute($request);
-
-            //Response
-            $response = ResponseHelper::getResponse(Constant::HTTP_STATUS_CODE_OK, $responseData);
-        } catch (ApiException) {
-            $response = ResponseHelper::formatApiException($e);
+            $response = $this->execute($request);
         } catch (\Exception $e) {
-            $this->logService->writeLogError($this->logUID, Message::LOG_EXCEPTION, params: ['message' => $e->getTraceAsString()]);
-            $response = ResponseHelper::getResponse(Constant::HTTP_STATUS_CODE_INTERNAL_SERVER_ERROR, $e->getCode());
+            Log::error('### Error: ' . $e);
+            $response = Helper::sendError(Constant::HTTP_STATUS_CODE_INTERNAL_SERVER_ERROR, $e->getCode());
         }
 
         //Exit log
-        $this->logService->writeLogEnd($this->logUID, json_decode($response));
+        Log::info(Message::LOG_END);
 
         return $response;
     }

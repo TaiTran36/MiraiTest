@@ -9,7 +9,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class UpdateAccountRequest extends FormRequest
+class UpdateAccountRequest extends ApiRequest
 {
     public function rules(): array
     {
@@ -33,14 +33,5 @@ class UpdateAccountRequest extends FormRequest
             'password.required' => Message::PASSWORD_REQUIRED,
             'password.confirmed' => Message::PASSWORD_NOT_MATCH,
         ];
-    }
-
-    protected function failedValidation(Validator $validator)
-    {
-        $errors = (new ValidationException($validator))->errors();
-
-        throw new HttpResponseException(
-            response()->json(['errors' => $errors, 'code'=> 401], JsonResponse::HTTP_UNPROCESSABLE_ENTITY)
-        );
     }
 }

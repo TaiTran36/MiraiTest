@@ -22,11 +22,11 @@ use App\Http\Controllers\API\UserController;
 // });
 
 Route::group(['namespace' => 'App\Http\Controllers\API\Accounts', 'prefix' => 'accounts'], function () {
-    Route::post('/create', 'CreateController@createAccount');
-    Route::post('/update', 'UpdateController@updateAccount');
-    Route::post('/delete', 'DeleteController@deleteAccount');
-    Route::get('/all', 'ListController@listAccount');
-    Route::get('/detail', 'DetailController@detailAccount');
+    Route::post('/create', 'CreateController@execute');
+    Route::post('/update', 'UpdateController@execute');
+    Route::post('/delete', 'DeleteController@execute');
+    Route::get('/all', 'ListController@execute');
+    Route::get('/detail', 'DetailController@execute');
 
     Route::get('/showSerial', 'ShowSerialController@showSerial');
     Route::get('/all-same-name', 'ShowAllSameFileNameController@showAllSameFilename');

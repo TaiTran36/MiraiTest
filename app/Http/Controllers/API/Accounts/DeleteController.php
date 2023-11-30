@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\API\Accounts;
 
-use App\Http\Request\DeleteAccountRequest;
+use App\Http\Controllers\API\BaseController;
+use App\Http\Request\ApiRequest;
 use App\Services\Account\AccountService;
 use App\Supports\Constant;
 use App\Supports\Helpers\Helper;
 use App\Supports\Message;
 use Illuminate\Support\Facades\Log;
 
-class DeleteController
+class DeleteController extends BaseController
 {
     protected $accountService;
     public function __construct(AccountService $accountService)
@@ -17,9 +18,9 @@ class DeleteController
         $this->accountService = $accountService;
     }
 
-    public function deleteAccount(DeleteAccountRequest $request) {
-        Log::info(Message::LOG_START);
-
+    public function execute(ApiRequest $request)
+    {
+        $request->getChild('App\Http\Request\DeleteAccountRequest');
         $dataAccount = $request->all();
         Log::info('### Param request: '  . json_encode($dataAccount));
 
@@ -27,7 +28,6 @@ class DeleteController
 
         if(!$existAccount) {
             Log::info('### Error: ' . Message::ACCOUNT_NOT_EXIST);
-            Log::info(Message::LOG_END);
             return Helper::sendError(Constant::HTTP_STATUS_CODE_INTERNAL_SERVER_ERROR, Message::ACCOUNT_NOT_EXIST );
         }
 
@@ -38,7 +38,6 @@ class DeleteController
                 'message' => Message::DELETE_ACCOUNT_SUCCESSFULLY
             ];
             Log::info('### Result: ' . Message::DELETE_ACCOUNT_SUCCESSFULLY);
-            Log::info(Message::LOG_END);
             return Helper::sendResponse($dataResponse, Constant::HTTP_STATUS_CODE_OK);
         }
     }
